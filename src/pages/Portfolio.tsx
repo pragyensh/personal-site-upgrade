@@ -1,4 +1,3 @@
-
 "use client"
 
 import type React from "react"
@@ -564,7 +563,7 @@ export default function Portfolio() {
                 {/* Special image for the Private Tutor card (index 7) */}
                 {index === 7 && (
                   <div className="hidden md:block w-full md:w-5/12 pr-0">
-                    <div className="bg-slate-800/50 border border-slate-700 rounded-lg overflow-hidden hover:border-cyan-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-400/10 -ml-16">
+                    <div className="bg-slate-800/50 border border-slate-700 rounded-lg overflow-hidden hover:border-cyan-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-400/10 mr-14">
                       <img
                         src="/lovable-uploads/3b282720-ad93-4104-b303-fdf2ec44accb.png"
                         alt="Teaching and Education"
