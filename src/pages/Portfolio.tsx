@@ -367,7 +367,7 @@ export default function Portfolio() {
             <div className="relative w-80 h-96">
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-2xl blur-xl opacity-30"></div>
               <img
-                src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                src="/lovable-uploads/904a4e3a-3724-4efc-a50d-1ccad06a4bd8.png"
                 alt="Pragyensh Pritiman Panda"
                 className="relative z-10 w-full h-full object-cover rounded-2xl shadow-2xl animate-fade-in"
               />
@@ -409,12 +409,12 @@ export default function Portfolio() {
                   onClick={triggerCardDrop}
                   style={{ transformStyle: "preserve-3d" }}
                 >
-                  {/* Cards with placeholder images */}
+                  {/* Cards with your actual images */}
                   {[
-                    { src: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", alt: "Campus Life", label: "Campus Life" },
-                    { src: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", alt: "Public Speaking", label: "Public Speaking" },
-                    { src: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", alt: "Artistic Work", label: "Artistic Work" },
-                    { src: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", alt: "Adventure Spirit", label: "Adventure Spirit" }
+                    { src: "/lovable-uploads/e520c246-bc60-4e75-b5ad-34fffb5a33e7.png", alt: "Campus Life", label: "Campus Life" },
+                    { src: "/lovable-uploads/76822490-3e3e-46ef-9aae-d4d761886f89.png", alt: "Public Speaking", label: "Public Speaking" },
+                    { src: "/lovable-uploads/2943a550-176d-46c3-84cd-4d06d8e012b6.png", alt: "Artistic Work", label: "Artistic Work" },
+                    { src: "/lovable-uploads/2498cefd-9439-4653-9af4-4cc284fecf0a.png", alt: "Adventure Spirit", label: "Adventure Spirit" }
                   ].map((card, index) => (
                     <div
                       key={index}
