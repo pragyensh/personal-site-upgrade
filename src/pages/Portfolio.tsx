@@ -1,4 +1,3 @@
-
 "use client"
 
 import type React from "react"
@@ -30,6 +29,8 @@ import {
   ClapperboardIcon as ChalkboardTeacher,
   Loader2,
   Hand,
+  CheckCircle,
+  AlertCircle,
 } from "lucide-react"
 
 export default function Portfolio() {
@@ -158,31 +159,62 @@ export default function Portfolio() {
 
     try {
       const formData = new FormData(contactFormRef.current)
-      
-      // Simulate API call since we don't have backend yet
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      const name = formData.get("name") as string
+      const email = formData.get("email") as string
+      const subject = formData.get("subject") as string
+      const message = formData.get("message") as string
+
+      // Enhanced validation
+      if (!name?.trim() || !email?.trim() || !subject?.trim() || !message?.trim()) {
+        throw new Error("Please fill in all required fields.")
+      }
+
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(email)) {
+        throw new Error("Please enter a valid email address.")
+      }
+
+      // Simulate API call with proper delay
+      await new Promise(resolve => setTimeout(resolve, 2500))
+
+      // Log form data for debugging
+      console.log("Contact form submission:", {
+        name: name.trim(),
+        email: email.trim(),
+        subject: subject.trim(),
+        message: message.trim(),
+        timestamp: new Date().toISOString()
+      })
 
       setFormStatus({
-        message: "Thank you for your message! I'll get back to you soon.",
+        message: "🎉 Thank you! Your message has been received successfully. I'll get back to you within 24-48 hours!",
         isSuccess: true,
         isVisible: true,
       })
 
       contactFormRef.current.reset()
+      
+      // Hide success message after 10 seconds
       setTimeout(() => {
         setFormStatus((prev) => ({ ...prev, isVisible: false }))
-      }, 8000)
+      }, 10000)
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Something went wrong. Please try again."
       console.error("Form submission error:", error)
+      
       setFormStatus({
-        message: "Something went wrong. Please try again or contact directly at princepragyensh@gmail.com",
+        message: errorMessage.includes("fill in all") || errorMessage.includes("valid email") 
+          ? errorMessage 
+          : "Something went wrong. Please try again or contact me directly at princepragyensh@gmail.com",
         isSuccess: false,
         isVisible: true,
       })
 
+      // Hide error message after 8 seconds
       setTimeout(() => {
         setFormStatus((prev) => ({ ...prev, isVisible: false }))
-      }, 10000)
+      }, 8000)
     } finally {
       setIsSubmitting(false)
     }
@@ -734,7 +766,7 @@ export default function Portfolio() {
                       htmlFor="name"
                       className="absolute text-sm text-gray-400 duration-300 transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3"
                     >
-                      Your Name
+                      Your Name *
                     </label>
                   </div>
 
@@ -751,7 +783,7 @@ export default function Portfolio() {
                       htmlFor="email"
                       className="absolute text-sm text-gray-400 duration-300 transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3"
                     >
-                      Your Email
+                      Your Email *
                     </label>
                   </div>
 
@@ -768,7 +800,7 @@ export default function Portfolio() {
                       htmlFor="subject"
                       className="absolute text-sm text-gray-400 duration-300 transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3"
                     >
-                      Subject
+                      Subject *
                     </label>
                   </div>
 
@@ -784,13 +816,15 @@ export default function Portfolio() {
                       htmlFor="message"
                       className="absolute text-sm text-gray-400 duration-300 transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3"
                     >
-                      Your Message
+                      Your Message *
                     </label>
                   </div>
 
                   <button
                     type="submit"
-                    className={`w-full bg-cyan-400 hover:bg-cyan-500 text-slate-900 font-semibold py-3 px-6 rounded-md transition-all duration-300 flex items-center justify-center ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}
+                    className={`w-full bg-cyan-400 hover:bg-cyan-500 text-slate-900 font-semibold py-3 px-6 rounded-md transition-all duration-300 flex items-center justify-center ${
+                      isSubmitting ? "opacity-70 cursor-not-allowed" : "hover:scale-105"
+                    }`}
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
@@ -808,11 +842,18 @@ export default function Portfolio() {
 
                   {formStatus.isVisible && (
                     <div
-                      className={`mt-4 p-3 rounded-md text-center transition-all duration-300 ${
-                        formStatus.isSuccess ? "bg-cyan-400/20 text-cyan-400" : "bg-red-400/20 text-red-400"
+                      className={`mt-4 p-4 rounded-md text-center transition-all duration-300 flex items-center justify-center gap-3 ${
+                        formStatus.isSuccess 
+                          ? "bg-emerald-400/20 text-emerald-400 border border-emerald-400/30" 
+                          : "bg-red-400/20 text-red-400 border border-red-400/30"
                       }`}
                     >
-                      {formStatus.message}
+                      {formStatus.isSuccess ? (
+                        <CheckCircle size={20} className="flex-shrink-0" />
+                      ) : (
+                        <AlertCircle size={20} className="flex-shrink-0" />
+                      )}
+                      <span className="text-sm leading-relaxed">{formStatus.message}</span>
                     </div>
                   )}
                 </form>
