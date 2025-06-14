@@ -44,8 +44,7 @@ export default function Portfolio() {
   const [showBackToTop, setShowBackToTop] = useState(false)
   const [formStatus, setFormStatus] = useState({ message: "", isSuccess: false, isVisible: false })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [cardDropState, setCardDropState] = useState<"stacked" | "dropping" | "revealed">("stacked")
-  const [droppedCards, setDroppedCards] = useState<number[]>([])
+  const [isFanned, setIsFanned] = useState(false)
 
   const words = ["Developer", "Artist", "Speaker", "Educator", "Yoga Enthusiast"]
   const nameRef = useRef<HTMLDivElement>(null)
@@ -232,23 +231,8 @@ export default function Portfolio() {
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
-  const triggerCardDrop = () => {
-    if (cardDropState !== "stacked") return
-
-    setCardDropState("dropping")
-    setDroppedCards([])
-
-    setTimeout(() => setDroppedCards([1]), 300)
-    setTimeout(() => setDroppedCards([1, 2]), 800)
-    setTimeout(() => setDroppedCards([1, 2, 3]), 1300)
-    setTimeout(() => setDroppedCards([1, 2, 3, 4]), 1800)
-
-    setTimeout(() => setCardDropState("revealed"), 2000)
-
-    setTimeout(() => {
-      setCardDropState("stacked")
-      setDroppedCards([])
-    }, 4000)
+  const handleCardDeckClick = () => {
+    setIsFanned(!isFanned)
   }
 
   return (
@@ -393,45 +377,48 @@ export default function Portfolio() {
 
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="relative animate-on-scroll">
-              <div
-                className="card-deck-container relative w-80 h-96 mx-auto cursor-pointer"
-                style={{ perspective: "1000px" }}
-              >
+              <div className="card-deck-container relative w-80 h-96 mx-auto cursor-pointer" style={{ perspective: "1000px" }}>
                 {/* Click Hint */}
                 <div className="click-hint absolute -top-8 left-1/2 transform -translate-x-1/2 text-cyan-400 text-sm font-medium opacity-80 animate-pulse pointer-events-none flex items-center gap-2">
                   <Hand size={16} />
-                  {cardDropState === "stacked" ? "Click to reveal cards" : "Watch the reveal..."}
+                  {isFanned ? "Click to stack" : "Click to fan out"}
                 </div>
 
                 {/* Card Deck */}
                 <div
-                  className="card-deck relative w-full h-full"
-                  onClick={triggerCardDrop}
+                  className={`card-deck relative w-full h-full transition-all duration-800 ${isFanned ? 'fanned' : ''}`}
+                  onClick={handleCardDeckClick}
                   style={{ transformStyle: "preserve-3d" }}
                 >
-                  {/* Cards with your actual images */}
                   {[
-                    { src: "/lovable-uploads/e520c246-bc60-4e75-b5ad-34fffb5a33e7.png", alt: "Campus Life", label: "Campus Life" },
-                    { src: "/lovable-uploads/76822490-3e3e-46ef-9aae-d4d761886f89.png", alt: "Public Speaking", label: "Public Speaking" },
-                    { src: "/lovable-uploads/2943a550-176d-46c3-84cd-4d06d8e012b6.png", alt: "Artistic Work", label: "Artistic Work" },
-                    { src: "/lovable-uploads/2498cefd-9439-4653-9af4-4cc284fecf0a.png", alt: "Adventure Spirit", label: "Adventure Spirit" }
+                    { src: "/lovable-uploads/e520c246-bc60-4e75-b5ad-34fffb5a33e7.png", alt: "Campus Life", title: "Web Development", desc: "Full-stack development with modern frameworks" },
+                    { src: "/lovable-uploads/76822490-3e3e-46ef-9aae-d4d761886f89.png", alt: "Public Speaking", title: "Public Speaking", desc: "Keynote speaker at tech conferences" },
+                    { src: "/lovable-uploads/2943a550-176d-46c3-84cd-4d06d8e012b6.png", alt: "Artistic Work", title: "Art & Design", desc: "Traditional and digital artwork" },
+                    { src: "/lovable-uploads/2498cefd-9439-4653-9af4-4cc284fecf0a.png", alt: "Adventure Spirit", title: "Yoga", desc: "State-level medalist" }
                   ].map((card, index) => (
                     <div
                       key={index}
-                      className={`card card-${index + 1} absolute w-full h-full rounded-2xl overflow-hidden shadow-2xl transition-all duration-700 ease-out ${droppedCards.includes(index + 1) ? "dropped" : ""}`}
+                      className={`card-item absolute w-full h-full rounded-2xl overflow-hidden shadow-2xl will-change-transform`}
                       style={{
-                        transform: droppedCards.includes(index + 1) 
-                          ? `translate3d(${(index - 1.5) * 80}px, ${index * 40}px, 0) rotateY(${(index - 1.5) * 15}deg)` 
-                          : `translate3d(0, ${index * -2}px, ${index * -1}px)`
+                        transform: isFanned
+                          ? index === 0 ? 'translateY(-120px) rotateZ(-10deg)'
+                            : index === 1 ? 'translateY(-60px) rotateZ(-5deg)'
+                            : index === 2 ? 'translateY(0) rotateZ(5deg)'
+                            : 'translateY(60px) rotateZ(10deg)'
+                          : `translateY(${index * 8}px) rotateZ(${index % 2 === 0 ? -3 + index : 1 + index}deg)`,
+                        zIndex: isFanned ? index + 1 : 4 - index,
+                        transition: `all 0.6s cubic-bezier(0.5, 1.5, 0.5, 1) ${index * 0.1}s`,
+                        transformOrigin: 'bottom center'
                       }}
                     >
                       <img
                         src={card.src}
                         alt={card.alt}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                       />
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900/90 to-transparent p-4">
-                        <p className="text-white text-sm font-medium">{card.label}</p>
+                      <div className="card-content absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900/90 to-transparent p-4 transform translate-y-full transition-transform duration-400 hover:translate-y-0">
+                        <h3 className="text-white font-semibold mb-2">{card.title}</h3>
+                        <p className="text-gray-300 text-sm">{card.desc}</p>
                       </div>
                     </div>
                   ))}
