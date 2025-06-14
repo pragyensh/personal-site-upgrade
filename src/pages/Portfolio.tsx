@@ -407,7 +407,7 @@ export default function Portfolio() {
                             : 'translateY(60px) rotateZ(10deg)'
                           : `translateY(${index * 8}px) rotateZ(${index % 2 === 0 ? -3 + index : 1 + index}deg)`,
                         zIndex: isFanned ? index + 1 : 4 - index,
-                        transition: `all 0.6s cubic-bezier(0.5, 1.5, 0.5, 1) ${index * 0.1}s`,
+                        transition: `all 0.8s cubic-bezier(0.5, 1.5, 0.5, 1) ${isFanned ? index * 1.5 : (3 - index) * 0.3}s`,
                         transformOrigin: 'bottom center'
                       }}
                     >
