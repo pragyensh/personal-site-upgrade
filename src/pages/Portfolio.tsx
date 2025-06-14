@@ -394,20 +394,22 @@ export default function Portfolio() {
                     { src: "/lovable-uploads/e520c246-bc60-4e75-b5ad-34fffb5a33e7.png", alt: "Campus Life", title: "Web Development", desc: "Full-stack development with modern frameworks" },
                     { src: "/lovable-uploads/76822490-3e3e-46ef-9aae-d4d761886f89.png", alt: "Public Speaking", title: "Public Speaking", desc: "Keynote speaker at tech conferences" },
                     { src: "/lovable-uploads/2943a550-176d-46c3-84cd-4d06d8e012b6.png", alt: "Artistic Work", title: "Art & Design", desc: "Traditional and digital artwork" },
-                    { src: "/lovable-uploads/2498cefd-9439-4653-9af4-4cc284fecf0a.png", alt: "Adventure Spirit", title: "Yoga", desc: "State-level medalist" }
+                    { src: "/lovable-uploads/31929818-d46d-4ca6-bd71-329542b1c94b.png", alt: "Yoga Performance", title: "Yoga", desc: "State-level medalist" },
+                    { src: "/lovable-uploads/2498cefd-9439-4653-9af4-4cc284fecf0a.png", alt: "Adventure Spirit", title: "Extracurriculars", desc: "Various sports and activities" }
                   ].map((card, index) => (
                     <div
                       key={index}
                       className={`card-item absolute w-full h-full rounded-2xl overflow-hidden shadow-2xl will-change-transform`}
                       style={{
                         transform: isFanned
-                          ? index === 0 ? 'translateY(-120px) rotateZ(-10deg)'
-                            : index === 1 ? 'translateY(-60px) rotateZ(-5deg)'
-                            : index === 2 ? 'translateY(0) rotateZ(5deg)'
-                            : 'translateY(60px) rotateZ(10deg)'
+                          ? index === 0 ? 'translateY(-160px) rotateZ(-12deg)'
+                            : index === 1 ? 'translateY(-80px) rotateZ(-6deg)'
+                            : index === 2 ? 'translateY(0) rotateZ(6deg)'
+                            : index === 3 ? 'translateY(80px) rotateZ(12deg)'
+                            : 'translateY(160px) rotateZ(18deg)'
                           : `translateY(${index * 8}px) rotateZ(${index % 2 === 0 ? -3 + index : 1 + index}deg)`,
-                        zIndex: isFanned ? index + 1 : 4 - index,
-                        transition: `all 0.8s cubic-bezier(0.5, 1.5, 0.5, 1) ${isFanned ? index * 1.5 : (3 - index) * 0.3}s`,
+                        zIndex: isFanned ? index + 1 : 5 - index,
+                        transition: `all 0.8s cubic-bezier(0.5, 1.5, 0.5, 1) ${isFanned ? index * 1.2 : (4 - index) * 0.3}s`,
                         transformOrigin: 'bottom center'
                       }}
                     >
