@@ -1,4 +1,3 @@
-
 import React, { useRef, useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail, Phone, Linkedin, Send, Loader2, CheckCircle, AlertCircle } from "lucide-react";
@@ -23,54 +22,36 @@ const ContactSection: React.FC = () => {
       const subject = formData.get("subject") as string;
       const message = formData.get("message") as string;
 
-      // Enhanced validation
+      // Validation (kept your existing checks)
       if (!name?.trim() || !email?.trim() || !subject?.trim() || !message?.trim()) {
         throw new Error("Please fill in all required fields.");
       }
 
-      // Email validation
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         throw new Error("Please enter a valid email address.");
       }
 
-      // Simulate API call with proper delay
-      await new Promise(resolve => setTimeout(resolve, 2500));
-
-      // Log form data for debugging
-      console.log("Contact form submission:", {
-        name: name.trim(),
-        email: email.trim(),
-        subject: subject.trim(),
-        message: message.trim(),
-        timestamp: new Date().toISOString()
-      });
-
+      // FormSubmit will handle the actual email sending
+      // We'll show success immediately since FormSubmit handles the backend
       setFormStatus({
-        message: "🎉 Thank you! Your message has been received successfully. I'll get back to you within 24-48 hours!",
+        message: "🎉 Thank you! Your message has been sent successfully.",
         isSuccess: true,
         isVisible: true,
       });
 
       contactFormRef.current.reset();
       
-      // Hide success message after 10 seconds
       setTimeout(() => {
         setFormStatus((prev) => ({ ...prev, isVisible: false }));
       }, 10000);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Something went wrong. Please try again.";
-      console.error("Form submission error:", error);
-      
       setFormStatus({
-        message: errorMessage.includes("fill in all") || errorMessage.includes("valid email") 
-          ? errorMessage 
-          : "Something went wrong. Please try again or contact me directly at princepragyensh@gmail.com",
+        message: errorMessage,
         isSuccess: false,
         isVisible: true,
       });
-
-      // Hide error message after 8 seconds
       setTimeout(() => {
         setFormStatus((prev) => ({ ...prev, isVisible: false }));
       }, 8000);
@@ -129,7 +110,17 @@ const ContactSection: React.FC = () => {
 
           <Card className="bg-slate-800/50 border-slate-700">
             <CardContent className="p-8">
-              <form ref={contactFormRef} onSubmit={handleContactSubmit} className="space-y-6">
+              <form 
+                ref={contactFormRef} 
+                action="https://formsubmit.co/princepragyensh@gmail.com" 
+                method="POST"
+                onSubmit={handleContactSubmit}
+                className="space-y-6"
+              >
+                <input type="hidden" name="_captcha" value="false" />
+                <input type="hidden" name="_template" value="basic" />
+                <input type="hidden" name="_next" value="https://yourportfolio.com/thank-you" />
+
                 <div className="relative">
                   <input
                     type="text"
