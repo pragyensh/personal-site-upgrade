@@ -17,6 +17,18 @@ export default {
 				'2xl': '1400px'
 			}
 		},
+
+		// Instead of fixed sizes like:
+<h1 className="text-6xl font-bold">
+
+// Use responsive classes like:
+<h1 className="text-2xl sm:text-4xl lg:text-6xl font-bold">
+
+// For containers:
+<div className="px-4 sm:px-6 lg:px-8 py-8">
+
+// For buttons:
+<button className="w-full sm:w-auto px-6 py-3 mb-4 sm:mb-0 sm:mr-4">
 		extend: {
 			colors: {
 				border: 'hsl(var(--border))',
