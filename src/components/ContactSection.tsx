@@ -22,18 +22,46 @@ const ContactSection: React.FC = () => {
       const subject = formData.get("subject") as string;
       const message = formData.get("message") as string;
 
-      // Validation (kept your existing checks)
+      // Enhanced validation
       if (!name?.trim() || !email?.trim() || !subject?.trim() || !message?.trim()) {
         throw new Error("Please fill in all required fields.");
       }
 
+      // Email validation
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         throw new Error("Please enter a valid email address.");
       }
 
-      // FormSubmit will handle the actual email sending
-      // We'll show success immediately since FormSubmit handles the backend
+      // Programmatic form submission to FormSubmit
+      const hiddenForm = document.createElement("form");
+      hiddenForm.style.display = "none";
+      hiddenForm.method = "POST";
+      hiddenForm.action = `https://formsubmit.co/el/${encodeURIComponent("princepragyensh@gmail.com")}`;
+      
+      // Add all form data
+      const formFields = {
+        name: name.trim(),
+        email: email.trim(),
+        subject: subject.trim(),
+        message: message.trim(),
+        _captcha: "false",
+        _template: "basic",
+        _next: "https://yourportfolio.com/thank-you" // Replace with your URL
+      };
+
+      Object.entries(formFields).forEach(([key, value]) => {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = value;
+        hiddenForm.appendChild(input);
+      });
+
+      document.body.appendChild(hiddenForm);
+      hiddenForm.submit();
+
+      // Show success state
       setFormStatus({
         message: "🎉 Thank you! Your message has been sent successfully.",
         isSuccess: true,
@@ -42,16 +70,21 @@ const ContactSection: React.FC = () => {
 
       contactFormRef.current.reset();
       
+      // Hide message after 10 seconds
       setTimeout(() => {
         setFormStatus((prev) => ({ ...prev, isVisible: false }));
       }, 10000);
+
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Something went wrong. Please try again.";
       setFormStatus({
-        message: errorMessage,
+        message: errorMessage.includes("fill in all") || errorMessage.includes("valid email") 
+          ? errorMessage 
+          : "Failed to send. Please email me directly at princepragyensh@gmail.com",
         isSuccess: false,
         isVisible: true,
       });
+
       setTimeout(() => {
         setFormStatus((prev) => ({ ...prev, isVisible: false }));
       }, 8000);
@@ -69,6 +102,7 @@ const ContactSection: React.FC = () => {
         </h2>
 
         <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+          {/* Left Side - Contact Information */}
           <div className="space-y-8">
             <div>
               <h3 className="text-2xl font-semibold text-white mb-4">Let's Build Something Meaningful Together</h3>
@@ -85,7 +119,12 @@ const ContactSection: React.FC = () => {
                   value: "princepragyensh@gmail.com",
                   href: "mailto:princepragyensh@gmail.com",
                 },
-                { icon: Phone, title: "Phone", value: "+91 XXXXX XXXXX", href: "tel:+91XXXXXXXXXX" },
+                { 
+                  icon: Phone, 
+                  title: "Phone", 
+                  value: "+91 XXXXX XXXXX", 
+                  href: "tel:+91XXXXXXXXXX" 
+                },
                 {
                   icon: Linkedin,
                   title: "LinkedIn",
@@ -99,7 +138,12 @@ const ContactSection: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold text-white">{contact.title}</h4>
-                    <a href={contact.href} className="text-gray-300 hover:text-cyan-400 transition-colors">
+                    <a 
+                      href={contact.href} 
+                      className="text-gray-300 hover:text-cyan-400 transition-colors"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       {contact.value}
                     </a>
                   </div>
@@ -108,19 +152,15 @@ const ContactSection: React.FC = () => {
             </div>
           </div>
 
+          {/* Right Side - Contact Form */}
           <Card className="bg-slate-800/50 border-slate-700">
             <CardContent className="p-8">
               <form 
                 ref={contactFormRef} 
-                action="https://formsubmit.co/princepragyensh@gmail.com" 
-                method="POST"
                 onSubmit={handleContactSubmit}
                 className="space-y-6"
               >
-                <input type="hidden" name="_captcha" value="false" />
-                <input type="hidden" name="_template" value="basic" />
-                <input type="hidden" name="_next" value="https://yourportfolio.com/thank-you" />
-
+                {/* Name Field */}
                 <div className="relative">
                   <input
                     type="text"
@@ -138,6 +178,7 @@ const ContactSection: React.FC = () => {
                   </label>
                 </div>
 
+                {/* Email Field */}
                 <div className="relative">
                   <input
                     type="email"
@@ -155,6 +196,7 @@ const ContactSection: React.FC = () => {
                   </label>
                 </div>
 
+                {/* Subject Field */}
                 <div className="relative">
                   <input
                     type="text"
@@ -172,6 +214,7 @@ const ContactSection: React.FC = () => {
                   </label>
                 </div>
 
+                {/* Message Field */}
                 <div className="relative">
                   <textarea
                     id="message"
@@ -188,6 +231,7 @@ const ContactSection: React.FC = () => {
                   </label>
                 </div>
 
+                {/* Submit Button */}
                 <button
                   type="submit"
                   className={`w-full bg-cyan-400 hover:bg-cyan-500 text-slate-900 font-semibold py-3 px-6 rounded-md transition-all duration-300 flex items-center justify-center ${
@@ -208,6 +252,7 @@ const ContactSection: React.FC = () => {
                   )}
                 </button>
 
+                {/* Status Message */}
                 {formStatus.isVisible && (
                   <div
                     className={`mt-4 p-4 rounded-md text-center transition-all duration-300 flex items-center justify-center gap-3 ${
