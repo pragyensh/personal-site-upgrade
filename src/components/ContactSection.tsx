@@ -1,86 +1,62 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail, Phone, Linkedin, Send, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 
-const ContactSection: React.FC = () => {
+const ContactSection = () => {
   const [formStatus, setFormStatus] = useState({ message: "", isSuccess: false, isVisible: false });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const contactFormRef = useRef<HTMLFormElement>(null);
 
-  const handleContactSubmit = async (e: React.FormEvent) => {
+  const handleContactSubmit = async (e) => {
     e.preventDefault();
-
-    if (!contactFormRef.current) return;
-
+    
     setIsSubmitting(true);
     setFormStatus({ message: "", isSuccess: false, isVisible: false });
 
     try {
-      const formData = new FormData(contactFormRef.current);
-      const name = formData.get("name") as string;
-      const email = formData.get("email") as string;
-      const subject = formData.get("subject") as string;
-      const message = formData.get("message") as string;
+      const formData = new FormData(e.target);
+      
+      // Validation
+      const name = formData.get("name")?.toString().trim();
+      const email = formData.get("email")?.toString().trim();
+      const subject = formData.get("subject")?.toString().trim();
+      const message = formData.get("message")?.toString().trim();
 
-      // Enhanced validation
-      if (!name?.trim() || !email?.trim() || !subject?.trim() || !message?.trim()) {
+      if (!name || !email || !subject || !message) {
         throw new Error("Please fill in all required fields.");
       }
 
-      // Email validation
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         throw new Error("Please enter a valid email address.");
       }
 
-      // Programmatic form submission to FormSubmit
-      const hiddenForm = document.createElement("form");
-      hiddenForm.style.display = "none";
-      hiddenForm.method = "POST";
-      hiddenForm.action = `https://formsubmit.co/el/${encodeURIComponent("princepragyensh@gmail.com")}`;
-      
-      // Add all form data
-      const formFields = {
-        name: name.trim(),
-        email: email.trim(),
-        subject: subject.trim(),
-        message: message.trim(),
-        _captcha: "false",
-        _template: "basic",
-        _next: "https://yourportfolio.com/thank-you" // Replace with your URL
-      };
-
-      Object.entries(formFields).forEach(([key, value]) => {
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = key;
-        input.value = value;
-        hiddenForm.appendChild(input);
+      // Submit to FormSubmit
+      const response = await fetch('https://formsubmit.co/princepragyensh@gmail.com', {
+        method: 'POST',
+        body: formData
       });
 
-      document.body.appendChild(hiddenForm);
-      hiddenForm.submit();
+      if (response.ok) {
+        setFormStatus({
+          message: "🎉 Thank you! Your message has been sent successfully. I'll get back to you soon!",
+          isSuccess: true,
+          isVisible: true,
+        });
+        e.target.reset();
+      } else {
+        throw new Error('Failed to send message');
+      }
 
-      // Show success state
-      setFormStatus({
-        message: "🎉 Thank you! Your message has been sent successfully.",
-        isSuccess: true,
-        isVisible: true,
-      });
-
-      contactFormRef.current.reset();
-      
-      // Hide message after 10 seconds
       setTimeout(() => {
         setFormStatus((prev) => ({ ...prev, isVisible: false }));
       }, 10000);
 
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Something went wrong. Please try again.";
+      const errorMessage = error instanceof Error ? error.message : "Something went wrong";
       setFormStatus({
         message: errorMessage.includes("fill in all") || errorMessage.includes("valid email") 
           ? errorMessage 
-          : "Failed to send. Please email me directly at princepragyensh@gmail.com",
+          : "Failed to send message. Please email me directly at princepragyensh@gmail.com",
         isSuccess: false,
         isVisible: true,
       });
@@ -155,11 +131,12 @@ const ContactSection: React.FC = () => {
           {/* Right Side - Contact Form */}
           <Card className="bg-slate-800/50 border-slate-700">
             <CardContent className="p-8">
-              <form 
-                ref={contactFormRef} 
-                onSubmit={handleContactSubmit}
-                className="space-y-6"
-              >
+              <form onSubmit={handleContactSubmit} className="space-y-6">
+                {/* Hidden FormSubmit fields */}
+                <input type="hidden" name="_captcha" value="false" />
+                <input type="hidden" name="_template" value="basic" />
+                <input type="hidden" name="_subject" value="New message from pragyensh.online" />
+                
                 {/* Name Field */}
                 <div className="relative">
                   <input
