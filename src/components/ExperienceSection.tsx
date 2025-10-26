@@ -90,19 +90,7 @@ const ExperienceSection: React.FC = () => {
                 </Card>
               </div>
 
-              {/* Special image for the Private Tutor card (index 7) */}
-              {index === 7 && (
-                <div className="hidden md:block w-full md:w-5/12 pr-0">
-                  <div className="bg-slate-800/50 border border-slate-700 rounded-lg overflow-hidden hover:border-cyan-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-400/10 -ml-10 mr-24">
-                    <img
-                      src="/lovable-uploads/3b282720-ad93-4104-b303-fdf2ec44accb.png"
-                      alt="Teaching and Education"
-                      className="w-full h-full object-cover"
-                      style={{ height: "200px" }}
-                    />
-                  </div>
-                </div>
-              )}
+              
 
               <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-cyan-400 rounded-full border-4 border-slate-900 z-10"></div>
             </div>
